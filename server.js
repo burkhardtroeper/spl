@@ -149,10 +149,6 @@ app.delete('/spl/:id', function (req,res) {
 
     var locationId = parseInt(req.params.id);
 
-    var matchedLocation = _.findWhere
-
-
-
 
     //
     // var todoID  = parseInt(req.params.id);
@@ -186,7 +182,7 @@ app.put('/spl/:id', function (req, res) {
 
 
 
-db.sequelize.sync({force:true}).then(function () {
+db.sequelize.sync().then(function () {
 
     app.listen(PORT, function () {
 

@@ -149,23 +149,32 @@ app.delete('/spl/:id', function (req,res) {
 
     var locationId = parseInt(req.params.id);
 
+    db.spl.destroy({
+        where: {
+            id: locationId
+        }
+    }).then(function (rowsDeleted) {
 
-    //
-    // var todoID  = parseInt(req.params.id);
-    // var matchedTodo = _.findWhere(todos, {id: todoID}); // find the datafield to be deleted
-    //
-    // if (!matchedTodo) {
-    //
-    //     res.status(404).json({"error": "no todo found with that id"}); // no datafield? Error ...
-    //
-    // } else {
-    //
-    //     todos = _.without(todos, matchedTodo); // delete datafield from array
-    //     res.json(matchedTodo); // res.json sends an json back ...
-    //
-    // }
+        if (rowsDeleted === 0) {
 
+            res.status(404).json({
 
+                error: 'No location with that id'
+
+            });
+
+        } else {
+
+            res.status(204).send(); // everything went well, nothing to send back
+
+        }
+
+    }, function (e) {
+
+        console.log(e);
+        res.status(500).send();
+
+    });
 
 });
 

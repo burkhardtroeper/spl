@@ -183,7 +183,68 @@ app.delete('/spl/:id', function (req,res) {
 
 app.put('/spl/:id', function (req, res) {
 
-    res.send('spl API PUT');
+    var locationId = parseInt(req.params.id);
+
+    var body = _.pick(req.body, 'username', 'shortTitle', 'title', 'summary', 'description', 'imageUrl', 'coord', 'shootTime', 'camera', 'lens', 'apperture', 'focalLength', 'iso', 'shutterSpeed', 'proTip', 'tags', 'published');
+
+    var attributes = {};
+
+    if (body.hasOwnProperty('shortTitle')) {
+
+        attributes.shortTitle = body.shortTitle;
+
+    }
+
+    if (body.hasOwnProperty('title')) {
+
+        attributes.title = body.title;
+
+    }
+
+    if (body.hasOwnProperty('summary')) {
+
+        attributes.summary = body.summary;
+
+    }
+
+    if (!_.isEmpty(attributes)) {
+
+        db.spl.findById(locationId).then(function (location) {
+
+            if (location) {
+
+                location.update(attributes).then(function (location) {
+
+                    res.json(location.toJSON);
+
+                }, function (e) {
+
+                    res.status(400).json(e);
+
+                });
+
+            } else {
+
+                res.status(404).send()
+
+            }
+
+        }, function () {
+
+            res.status(500).send();
+
+        });
+
+    } else {
+
+        res.status(404).json({
+
+            error: 'Unvalid key!'
+
+        });
+
+    }
+
 
 });
 

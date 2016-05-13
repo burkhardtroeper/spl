@@ -6,7 +6,7 @@ var _ = require('underscore');
 
 module.exports = function (sequelize, DataTypes) {
 
-    return sequelize.define('user', {
+    var user = sequelize.define('user', {
 
         email: {
             type: DataTypes.STRING,
@@ -56,8 +56,45 @@ module.exports = function (sequelize, DataTypes) {
             }
 
         },
+        classMethods: {
+
+            authenticate: function (body) {
+
+                return new Promise(function (resolve, reject) {
+
+                    if (typeof body.email !== 'string' || typeof body.password !== 'string') {
+
+                            return reject(); // request did not contain the necessary data, aka email and password, so reject the promise (error)
+
+                    }
+
+                    user.findOne({where: {email: body.email}}).then(function (user) {
+
+                        if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) { // no user found or password incorrect ...
+
+                            return reject(); // authentication is possible, but failed, so reject the promise (erro)
+
+                        }
+
+                        // okay, user exists and password was not rejected, so it mus be correct, so login is valid, resolve the promise (success)
+
+                        resolve(user);
+
+                    }, function (e) {
+
+                        // email does not exist, reject the promise (error)
+                        reject();
+
+                    })
+
+                });
+
+            }
+
+        },
         instanceMethods: {
             
+            // return only the part of the userdata that we accept to be public
             toPublicJSON: function () {
 
                 var json = this.toJSON();
@@ -68,5 +105,7 @@ module.exports = function (sequelize, DataTypes) {
         }
 
     });
+
+    return user;
 
 };

@@ -4,12 +4,17 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var db = require('./db.js');
 var bcrypt = require('bcrypt');
 
-var db = require('./db.js');
+
+
+var middleware = require('./middleware')(db);
 
 var app = express();
 var PORT = process.env.PORT || 3000;
+
+
 
 app.use(bodyParser.json()); //everytime a json-request comes in, express is going to parse it and we are able to access it via request.body
 
@@ -26,7 +31,7 @@ app.get('/', function (req,res) {
 
 // GET all /spl?username=xxx&q=yyy
 
-app.get('/spl', function (req, res) {
+app.get('/spl', middleware.requireAuthentification, function (req, res) {
 
     var queryParams = req.query; // saves all the queries in properties - values-format
 
@@ -94,7 +99,7 @@ app.get('/spl', function (req, res) {
 
 // GET individual /spl/:id
 
-app.get('/spl/:id', function (req, res) {
+app.get('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
 
     var locationId = parseInt(req.params.id);
@@ -127,7 +132,7 @@ app.get('/spl/:id', function (req, res) {
 
 // POST /spl
 
-app.post('/spl', function (req,res) {
+app.post('/spl', middleware.requireAuthentification, function (req,res) {
 
     var body = _.pick(req.body, 'username', 'shortTitle', 'title', 'summary', 'description', 'imageUrl', 'coord', 'shootTime', 'camera', 'lens', 'apperture', 'focalLength', 'iso', 'shutterSpeed', 'proTip', 'tags', 'published');
 
@@ -146,7 +151,7 @@ app.post('/spl', function (req,res) {
 
 // DELETE /spl
 
-app.delete('/spl/:id', function (req,res) {
+app.delete('/spl/:id', middleware.requireAuthentification, function (req,res) {
 
     var locationId = parseInt(req.params.id);
 
@@ -182,7 +187,7 @@ app.delete('/spl/:id', function (req,res) {
 
 // PUT /spl/:id
 
-app.put('/spl/:id', function (req, res) {
+app.put('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
     var locationId = parseInt(req.params.id);
 

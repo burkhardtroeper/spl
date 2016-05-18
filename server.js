@@ -138,13 +138,23 @@ app.post('/spl', middleware.requireAuthentification, function (req,res) {
 
     db.spl.create(body).then(function (location) {
 
-        res.json(location.toJSON());
+        //res.json(location.toJSON());
+
+        req.user.addSpl(location).then(function () {
+
+            return location.reload();
+
+        }).then(function (location) {
+
+            res.json(location.toJSON());
+
+        });
 
     }, function (e) {
 
         res.status(400).json(e);
 
-    })
+    });
 
 });
 

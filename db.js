@@ -30,6 +30,7 @@ var db = {};
 
 db.spl = sequelize.import(__dirname + '/models/spl.js');
 db.user = sequelize.import(__dirname + '/models/users.js');
+db.token = sequelize.import(__dirname + '/models/token.js');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

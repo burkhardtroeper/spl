@@ -324,50 +324,46 @@ app.post('/users', function (req,res) {
 app.post('/users/login', function (req,res) {
 
     var body = _.pick(req.body, 'email', 'password');
+    var userInstance;
 
     db.user.authenticate(body).then(function (user) {
 
         var token = user.generateToken('authentication'); // at login generate token to authenticate user later on
+        userInstance = user;
 
-        if (token) {
+        return db.token.create({
 
-            res.header('Auth', token).json(user.toPublicJSON());
+            token: token
 
-        } else {
+        });
 
-            res.status(401).send();
-        }
+    }).then(function (tokenInstance) {
 
-    }, function () {
+        res.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
+
+
+    }).catch(function () {
 
         res.status(401).send();
 
     });
 
-    // if (typeof body.email !== 'string' || typeof body.password !== 'string') {
-    //
-    //     return res.status(400).send();
-    //
-    // }
-    //
-    // db.user.findOne({where: {email: body.email}}).then(function (user) {
-    //
-    //     if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) { // no user found or password incorrect ...
-    //
-    //         return res.status(401).send(); // authentication is possible, but failed
-    //
-    //     }
-    //
-    //     // okay, user exists and password was not rejected, so it mus be correct, so login valide
-    //
-    //     res.json(user.toPublicJSON()); // return just the data we want to be public
-    //
-    // }, function (e) {
-    //
-    //     // email does not exist
-    //     res.status(500).send();
-    //
-    // })
+});
+
+// DELETE /users/login
+
+app.delete('/users/login', middleware.requireAuthentification, function (req, res) {
+
+    req.token.destroy().then(function () {
+        
+        res.status(204).send();
+        
+    }).catch(function () {
+
+        res.status(500).send();
+
+    });
+
 
 });
 

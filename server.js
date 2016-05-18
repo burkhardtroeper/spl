@@ -29,7 +29,28 @@ app.get('/', function (req,res) {
 });
 
 
-// GET all /spl?username=xxx&q=yyy
+
+// GET all locations, logged in or not ...
+
+app.get('/splall', function (req, res) {
+
+    var where = {};
+
+    db.spl.findAll().then(function (locations) {
+
+        res.json(locations)
+
+    }, function (e) {
+
+        res.status(500).send()
+
+    });
+
+});
+
+
+
+// GET all user /spl?username=xxx&q=yyy
 
 app.get('/spl', middleware.requireAuthentification, function (req, res) {
 
@@ -37,7 +58,11 @@ app.get('/spl', middleware.requireAuthentification, function (req, res) {
 
     console.log(queryParams);
 
-    var where = {};
+    var where = {
+
+        userId: req.user.get('id')
+
+    };
 
     if (queryParams.hasOwnProperty('username')) {
 
@@ -101,10 +126,14 @@ app.get('/spl', middleware.requireAuthentification, function (req, res) {
 
 app.get('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
-
     var locationId = parseInt(req.params.id);
 
-    db.spl.findById(locationId).then(function (location) {
+    db.spl.findOne({
+        where: {
+            id: locationId,
+            userId: req.user.get('id')
+        }
+    }).then(function (location) {
 
         if(!!location) {
 
@@ -122,7 +151,7 @@ app.get('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
     }).catch(function (e) {
 
-        console.log("Erro");
+        console.log("Error");
         console.log(e);
 
     });
@@ -167,7 +196,8 @@ app.delete('/spl/:id', middleware.requireAuthentification, function (req,res) {
 
     db.spl.destroy({
         where: {
-            id: locationId
+            id: locationId,
+            userId: req.user.get('id')
         }
     }).then(function (rowsDeleted) {
 
@@ -223,9 +253,16 @@ app.put('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
     }
 
+    // ... im Moment nur die drei Felder änderbar.
+
     if (!_.isEmpty(attributes)) {
 
-        db.spl.findById(locationId).then(function (location) {
+        db.spl.findOne({
+            where: {
+                id: locationId,
+                userId: req.user.get('id')
+            }
+        }).then(function (location) {
 
             if (location) {
 

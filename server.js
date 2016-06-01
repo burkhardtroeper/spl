@@ -16,6 +16,12 @@ var PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Auth");
+    next();
+});
+
 app.use(bodyParser.json()); //everytime a json-request comes in, express is going to parse it and we are able to access it via request.body
 
 

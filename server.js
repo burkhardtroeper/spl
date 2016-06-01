@@ -14,14 +14,14 @@ var app = express();
 var PORT = process.env.PORT || 3000;
 
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Auth");
-    res.header('Access-Control-Expose-Headers', 'Auth');
-    next();
-});
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Auth");
+//     res.header('Access-Control-Expose-Headers', 'Auth');
+//     next();
+// });
 
-app.use(cors());
+app.use(cors({allowedHeaders: 'Content-Type, Auth', exposedHeaders: 'Auth'}));
 
 
 app.use(bodyParser.json()); //everytime a json-request comes in, express is going to parse it and we are able to access it via request.body

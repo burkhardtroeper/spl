@@ -2,12 +2,11 @@
  * Created by roeper on 09.05.16.
  */
 var express = require('express');
+var cors = require('cors');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
 var bcrypt = require('bcrypt');
-
-
 
 var middleware = require('./middleware')(db);
 
@@ -15,6 +14,7 @@ var app = express();
 var PORT = process.env.PORT || 3000;
 
 
+app.use(cors());
 
 app.use(bodyParser.json()); //everytime a json-request comes in, express is going to parse it and we are able to access it via request.body
 

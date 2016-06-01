@@ -21,7 +21,7 @@ var PORT = process.env.PORT || 3000;
 //     next();
 // });
 
-app.use(cors({allowedHeaders: 'Content-Type, Auth', exposedHeaders: 'Auth'}));
+app.use(cors());
 
 
 app.use(bodyParser.json()); //everytime a json-request comes in, express is going to parse it and we are able to access it via request.body

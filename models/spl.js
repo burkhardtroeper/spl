@@ -5,7 +5,7 @@ module.exports = function (sequelize, DataTypes) {
 
     return sequelize.define('spl', {
 
-        username: {
+        email: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -81,7 +81,18 @@ module.exports = function (sequelize, DataTypes) {
 
         },
 
-        shootTime: {
+        uhrzeit: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1,50]
+
+            }
+
+
+        },
+
+        datum: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {

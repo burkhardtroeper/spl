@@ -349,7 +349,7 @@ app.post('/users/login', function (req,res) {
 
         var token = tokenInstance.get('token');  
         //res.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
-        res.json(token);
+        res.json(token).json(userInstance.toPublicJSON());
 
 
     }).catch(function () {

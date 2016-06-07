@@ -38,13 +38,48 @@ app.get('/', function (req,res) {
 
 
 
-// GET all locations, logged in or not ...
+// GET all locations, logged in or not ... optional ?q=yyy
 
 app.get('/splall', function (req, res) {
 
+    var queryParams = req.query; // saves all the queries in properties - values-format
+
     var where = {};
 
-    db.spl.findAll().then(function (locations) {
+    if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+
+        where = {
+
+            $or: [
+                {
+                    shortTitle: {
+                        $like: '%' + queryParams.q + "%"
+                    }
+                },
+                {
+                    title: {
+                        $like: '%' + queryParams.q + "%"
+                    }
+                },
+                {
+                    summary: {
+                        $like: '%' + queryParams.q + "%"
+                    }
+                },
+                {
+                    description: {
+                        $like: '%' + queryParams.q + "%"
+                    }
+                }
+
+            ]
+
+        };
+
+    }
+
+
+    db.spl.findAll({where: where}).then(function (locations) {
 
         res.json(locations)
 
@@ -171,7 +206,9 @@ app.get('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
 app.post('/spl', middleware.requireAuthentification, function (req,res) {
 
-    var body = _.pick(req.body, 'username', 'shortTitle', 'title', 'summary', 'description', 'imageUrl', 'coord', 'shootTime', 'camera', 'lens', 'apperture', 'focalLength', 'iso', 'shutterSpeed', 'proTip', 'tags', 'published');
+    console.log("In location input");
+    
+    var body = _.pick(req.body, 'email', 'shortTitle', 'title', 'summary', 'description', 'imageUrl', 'coord', 'uhrzeit', 'datum', 'camera', 'lens', 'apperture', 'focalLength', 'iso', 'shutterSpeed', 'proTip', 'tags', 'published');
 
     db.spl.create(body).then(function (location) {
 
@@ -189,6 +226,7 @@ app.post('/spl', middleware.requireAuthentification, function (req,res) {
 
     }, function (e) {
 
+        console.log(e);
         res.status(400).json(e);
 
     });

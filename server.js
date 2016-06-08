@@ -469,8 +469,8 @@ app.delete('/users/login', middleware.requireAuthentification, function (req, re
 });
 
 
-//db.sequelize.sync({force: true}).then(function () {
-db.sequelize.sync().then(function () {
+db.sequelize.sync({force: true}).then(function () {
+//db.sequelize.sync().then(function () {
 
     app.listen(PORT, function () {
 

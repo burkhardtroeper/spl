@@ -299,7 +299,60 @@ app.put('/spl/:id', middleware.requireAuthentification, function (req, res) {
 
     }
 
-    // ... im Moment nur die drei Felder änderbar.
+    if (body.hasOwnProperty('description')) {
+
+        attributes.shortTitle = body.shortTitle;
+
+    }
+
+    if (body.hasOwnProperty('camera')) {
+
+        attributes.summary = body.summary;
+
+    }
+
+    if (body.hasOwnProperty('lens')) {
+
+        attributes.shortTitle = body.shortTitle;
+
+    }
+
+    if (body.hasOwnProperty('apperture')) {
+
+        attributes.title = body.title;
+
+    }
+
+    if (body.hasOwnProperty('focalLength')) {
+
+        attributes.summary = body.summary;
+
+    }
+
+    if (body.hasOwnProperty('iso')) {
+
+        attributes.shortTitle = body.shortTitle;
+
+    }
+
+    if (body.hasOwnProperty('shutterSpeed')) {
+
+        attributes.title = body.title;
+
+    }
+
+    if (body.hasOwnProperty('proTip')) {
+
+        attributes.summary = body.summary;
+
+    }
+
+    if (body.hasOwnProperty('tags')) {
+
+        attributes.shortTitle = body.shortTitle;
+
+    }
+
 
     if (!_.isEmpty(attributes)) {
 
@@ -416,8 +469,8 @@ app.delete('/users/login', middleware.requireAuthentification, function (req, re
 });
 
 
-
-db.sequelize.sync({force: true}).then(function () {
+//db.sequelize.sync({force: true}).then(function () {
+db.sequelize.sync().then(function () {
 
     app.listen(PORT, function () {
 
